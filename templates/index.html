@@ -1,1 +1,219 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Утренний Ескендір</title>
+  <meta name="claude:viewport-fit-sides" content="cover">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Literata:ital,wght@0,400;0,600;1,400&family=Neucha&display=swap">
+  <style>
+    :root {
+      --paper: #ffffff;
+      --ink: #0b0b0b;
+      --grey: #5e5e5e;
+      --tint: #ececec;
+      --line: #b5b5b5;
+      --display: 'Unbounded', 'Arial Black', sans-serif;
+      --text: 'Literata', Georgia, serif;
+      --hand: 'Neucha', 'Comic Sans MS', cursive;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --paper: #121212;
+        --ink: #f2f2f2;
+        --grey: #a3a3a3;
+        --tint: #222222;
+        --line: #444444;
+        color-scheme: dark;
+      }
+    }
+    :root[data-theme="dark"] {
+      --paper: #121212;
+      --ink: #f2f2f2;
+      --grey: #a3a3a3;
+      --tint: #222222;
+      --line: #444444;
+      color-scheme: dark;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--text);
+      font-size: 16px;
+      line-height: 1.5;
+      margin: 0;
+      padding-block: 14px 40px;
+      padding-left: max(16px, env(safe-area-inset-left, 0px));
+      padding-right: max(16px, env(safe-area-inset-right, 0px));
+      -webkit-font-smoothing: antialiased;
+    }
+    .sheet { max-width: 560px; margin: 0 auto; }
+    .binding { display: flex; justify-content: space-between; padding: 0 14px; margin-bottom: 14px; }
+    .binding i { width: 12px; height: 12px; border-radius: 50%; background: var(--ink); display: block; }
+    .mast { display: grid; grid-template-columns: auto 1fr; column-gap: 18px; align-items: end; }
+    .day { font-family: var(--display); font-weight: 900; font-size: clamp(96px, 30vw, 150px); line-height: .78; letter-spacing: -5px; margin-left: -4px; }
+    .month { font-family: var(--display); font-weight: 700; font-size: clamp(20px, 6vw, 28px); line-height: 1; text-transform: uppercase; }
+    .weekday { font-family: var(--display); font-size: clamp(13px, 3.6vw, 16px); margin-top: 6px; }
+    .issue { margin-top: 12px; font-size: 14px; color: var(--grey); }
+    .issue b { display: block; font-family: var(--display); font-weight: 700; font-size: 15px; color: var(--ink); margin-bottom: 2px; }
+    .sunline { display: flex; flex-wrap: wrap; gap: 4px 20px; margin-top: 16px; padding: 8px 0; border-top: 3px solid var(--ink); border-bottom: 1px solid var(--ink); font-size: 14px; }
+    .sunline b { font-family: var(--display); font-weight: 700; font-size: 14px; margin-left: 4px; font-variant-numeric: tabular-nums; }
+    section { margin-top: 26px; }
+    h2 { font-family: var(--display); font-weight: 700; font-size: 17px; line-height: 1.15; margin-bottom: 10px; }
+    .weather { display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: center; background: var(--tint); padding: 14px 16px; }
+    .temp { font-family: var(--display); font-weight: 900; font-size: 44px; line-height: .9; font-variant-numeric: tabular-nums; }
+    .weather p { font-size: 15px; margin: 0; }
+    .week { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; font-size: 14px; }
+    .week div { border-top: 1px solid var(--line); padding-top: 6px; }
+    .week b { display: block; font-family: var(--display); font-weight: 700; font-size: 12px; margin-bottom: 2px; }
+    .src { font-size: 13px; color: var(--grey); }
+    .src a, .news a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+    .tasks { list-style: none; padding: 0; margin: 0; }
+    .tasks li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); align-items: start; }
+    .tasks li:last-child { border-bottom: none; }
+    .box { width: 20px; height: 20px; border: 2px solid var(--ink); margin-top: 3px; display: block; }
+    .tasks strong { font-weight: 600; display: block; }
+    .tasks small { font-size: 14px; color: var(--grey); display: block; }
+    .news { list-style: none; padding: 0; margin: 0; }
+    .news li { padding: 10px 0; border-bottom: 1px solid var(--line); }
+    .news li:last-child { border-bottom: none; }
+    .news .tag { font-family: var(--display); font-weight: 700; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--grey); display: block; margin-bottom: 2px; }
+    .news strong { font-weight: 600; display: block; }
+    .news span.s { font-size: 13px; color: var(--grey); display: block; margin-top: 2px; }
+    .idea { border: 2px solid var(--ink); padding: 14px 16px; }
+    .idea p { margin: 0; }
+    .idea p + p { margin-top: 6px; }
+    .poem { font-style: italic; text-align: center; padding: 14px 0 0; border-top: 3px solid var(--ink); margin-top: 28px; }
+    .poem p { margin: 0; }
+    .poem small { display: block; margin-top: 8px; font-style: normal; font-size: 13px; color: var(--grey); }
+  </style>
+</head>
+<body>
 
+<div class="sheet">
+  <div class="binding" aria-hidden="true">
+    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+  </div>
+
+  <header class="mast">
+    <div class="day">3</div>
+    <div>
+      <div class="month">НОЯБРЬ</div>
+      <div class="weekday">вторник</div>
+      <div class="issue">
+        <b>Утренний Ескендір</b>
+        Выпуск № 1 · Қызылорда
+      </div>
+    </div>
+  </header>
+
+  <div class="sunline">
+    <span>Восход<b>07:18</b></span>
+    <span>Закат<b>17:26</b></span>
+    <span>День<b>10 ч 08 мин</b></span>
+  </div>
+
+  <section>
+    <h2>Погода в Қызылорда</h2>
+    <div class="weather">
+      <div class="temp">+16°</div>
+      <p>Днём +15…+17°, ночью 0…+2°. Ясно, без осадков. Ночной ветер северо-восточный, 7–12 м/с. В области ночью заморозки до −6°.</p>
+    </div>
+    <div class="week">
+      <div><b>СР 4 НОЯ</b>+16…+18°</div>
+      <div><b>ЧТ 5 НОЯ</b>+18…+20°</div>
+      <div><b>ПТ 6 НОЯ</b>+20…+22°</div>
+    </div>
+    <p class="src" style="margin-top:8px">Источник: Казгидромет. Восход и закат посчитаны по координатам города.</p>
+  </section>
+
+  <section>
+    <h2>Дела на сегодня</h2>
+    <ul class="tasks">
+      <li>
+        <span class="box"></span>
+        <div>
+          <strong>Календарь на сегодня свободен</strong>
+          <small>Событий и встреч не запланировано</small>
+        </div>
+      </li>
+      <li>
+        <span class="box"></span>
+        <div>
+          <strong>Сверка поставок и остатков</strong>
+          <small>Проверить заявки торговым представителям к обеду</small>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Напоминания</h2>
+    <ul class="tasks">
+      <li>
+        <input type="checkbox" id="vit" style="width:20px;height:20px;margin:3px 0 0;accent-color:var(--ink)">
+        <label for="vit">
+          <strong>Принять утренние витамины</strong>
+          <small>Для бодрости и продуктивного дня</small>
+        </label>
+      </li>
+    </ul>
+    <script>
+      (function(){
+        var k = 'morning-paper-vit-2026-11-03', el = document.getElementById('vit');
+        try { el.checked = localStorage.getItem(k) === '1'; } catch(e){}
+        el.addEventListener('change', function(){
+          try { localStorage.setItem(k, el.checked ? '1' : '0'); } catch(e){}
+        });
+      })();
+    </script>
+  </section>
+
+  <section>
+    <h2>Новости</h2>
+    <ul class="news">
+      <li>
+        <span class="tag">ИИ</span>
+        <strong>Инвесторы скорректировали ориентиры по IPO крупных ИИ-лабораторий</strong>
+        Оценка Anthropic стабилизировалась в коридоре $1,5–1,6 трлн после пересмотра технологического сектора при квартальной выручке около $17 млрд.
+        <span class="s">Dataconomy, 3 ноября</span>
+      </li>
+      <li>
+        <span class="tag">Бизнес</span>
+        <strong>Маркировка товаров лёгкой промышленности и новые чеки</strong>
+        В Казахстане вводится обязательная маркировка кодами DataMatrix и уточняются обязательные реквизиты кассовых чеков для цифровых оплат.
+        <span class="s">Zakon.kz</span>
+      </li>
+      <li>
+        <span class="tag">Казахстан</span>
+        <strong>Развитие микрокредитования и безналичных сервисов для ритейла</strong>
+        Региональные торговые точки получают упрощенный доступ к микрокредитам на пополнение оборотных средств и закупку торгового оборудования.
+        <span class="s">Экономический вестник РК</span>
+      </li>
+      <li>
+        <span class="tag">Мир</span>
+        <strong>Стабилизация оптовых цен на продовольствие в Евразии</strong>
+        Завершение уборочных кампаний снизило давление на базовую потребительскую корзину, что позволяет магазинам фиксировать выгодные закупочные цены.
+        <span class="s">Международный обзор</span>
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Бизнес-идея дня для продуктового магазина</h2>
+    <div class="idea">
+      <p><strong>Комбо «Утренний перекус у кассы»</strong></p>
+      <p>В утренние часы с 08:00 до 10:30 поставьте рядом с кассой небольшую корзину с готовым комбо: бутылочка напитка + свежая выпечка/сэндвич по одной круглой цене. Покупатель не тратит время на поиск по рядам, а магазин повышает средний чек за счет импульсивной утренней покупки.</p>
+      <p><strong>Как запустить:</strong> Договоритесь с локальной пекарней о поставке 10–12 порций утром с возможностью возврата нереализованных остатков.</p>
+    </div>
+  </section>
+
+  <div class="poem">
+    <p>«Магазин у дома держится не только на полках,<br>а на внимании к деталям и свежем товаре».</p>
+    <small>Утренний выпуск · 3 ноября 2026</small>
+  </div>
+</div>
+
+</body>
+</html>
