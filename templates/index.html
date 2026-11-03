@@ -1,61 +1,153 @@
 <!doctype html>
-<html>
+<html lang="kk">
 <head>
   <meta charset="utf8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Утренний Ескендір</title>
-  <meta name="claude:viewport-fit-sides" content="cover">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Literata:ital,wght@0,400;0,600;1,400&family=Neucha&display=swap">
   <style>
-    :root{
-      --paper:#ffffff; --ink:#0b0b0b; --grey:#5e5e5e; --tint:#ececec; --line:#b5b5b5;
-      --display:'Unbounded','Arial Black',sans-serif;
-      --text:'Literata',Georgia,serif;
-      --hand:'Neucha','Comic Sans MS',cursive;
+    :root {
+      --paper: #ffffff;
+      --ink: #0b0b0b;
+      --grey: #666666;
+      --tint: #f5f5f7;
+      --line: #dedede;
+      --display: 'Unbounded', sans-serif;
+      --text: 'Literata', Georgia, serif;
+      --hand: 'Neucha', cursive;
     }
-    @media (prefers-color-scheme: dark){
-      :root:not([data-theme="light"]){ --paper:#121212; --ink:#f2f2f2; --grey:#a3a3a3; --tint:#222; --line:#444; color-scheme:dark; }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --paper: #121212;
+        --ink: #f2f2f2;
+        --grey: #9e9e9e;
+        --tint: #1c1c1e;
+        --line: #333333;
+      }
     }
-    :root[data-theme="dark"]{ --paper:#121212; --ink:#f2f2f2; --grey:#a3a3a3; --tint:#222; --line:#444; color-scheme:dark; }
-    *{box-sizing:border-box}
-    body{ background:var(--paper); color:var(--ink); font-family:var(--text); font-size:16px; line-height:1.5;
-      padding-block:14px 40px; padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px)); }
-    .sheet{ max-width:560px; margin:0 auto; }
-    .binding{ display:flex; justify-content:space-between; padding:0 14px; margin-bottom:14px; }
-    .binding i{ width:12px; height:12px; border-radius:50%; background:var(--ink); display:block; }
-    .mast{ display:grid; grid-template-columns:auto 1fr; column-gap:18px; align-items:end; }
-    .day{ font-family:var(--display); font-weight:900; font-size:clamp(96px,30vw,150px); line-height:.78; letter-spacing:-5px; margin-left:-4px; }
-    .month{ font-family:var(--display); font-weight:700; font-size:clamp(20px,6vw,28px); line-height:1; }
-    .weekday{ font-family:var(--display); font-size:clamp(13px,3.6vw,16px); margin-top:6px; }
-    .issue{ margin-top:12px; font-size:14px; color:var(--grey); }
-    .issue b{ display:block; font-family:var(--display); font-weight:700; font-size:15px; color:var(--ink); margin-bottom:2px; }
-    .sunline{ display:flex; flex-wrap:wrap; gap:4px 20px; margin-top:16px; padding:8px 0; border-top:3px solid var(--ink); border-bottom:1px solid var(--ink); font-size:14px; }
-    .sunline b{ font-family:var(--display); font-weight:700; font-size:14px; margin-left:4px; font-variant-numeric:tabular-nums; }
-    section{ margin-top:26px; }
-    h2{ font-family:var(--display); font-weight:700; font-size:17px; line-height:1.15; margin-bottom:10px; }
-    .weather{ display:grid; grid-template-columns:auto 1fr; gap:14px; align-items:center; background:var(--tint); padding:14px 16px; }
-    .temp{ font-family:var(--display); font-weight:900; font-size:44px; line-height:.9; font-variant-numeric:tabular-nums; }
-    .weather p{ font-size:15px; margin:0; }
-    .week{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:10px; font-size:14px; }
-    .week div{ border-top:1px solid var(--line); padding-top:6px; }
-    .week b{ display:block; font-family:var(--display); font-weight:700; font-size:12px; margin-bottom:2px; }
-    .src{ font-size:13px; color:var(--grey); }
-    .tasks{ list-style:none; padding:0; margin:0; }
-    .tasks li{ display:grid; grid-template-columns:22px 1fr; gap:10px; padding:8px 0; border-bottom:1px solid var(--line); }
-    .tasks li:last-child{ border-bottom:none; }
-    .box{ width:20px; height:20px; border:2px solid var(--ink); margin-top:3px; }
-    .tasks strong{ font-weight:600; display:block; }
-    .tasks small{ font-size:14px; color:var(--grey); display:block; }
-    .news{ list-style:none; padding:0; margin:0; }
-    .news li{ padding:10px 0; border-bottom:1px solid var(--line); }
-    .news li:last-child{ border-bottom:none; }
-    .news .tag{ font-family:var(--display); font-weight:700; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--grey); display:block; margin-bottom:2px; }
-    .news strong{ font-weight:600; display:block; }
-    .news span.s{ font-size:13px; color:var(--grey); display:block; margin-top:2px; }
-    .idea{ border:2px solid var(--ink); padding:14px 16px; background:var(--tint); }
-    .idea p{ margin:0; }
-    .idea p + p{ margin-top:6px; }
-    .poem{ font-style:italic; text-align:center; padding:14px 0 0; border-top:3px solid var(--ink); margin-top:28px; font-family:var(--hand); font-size:18px; }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--text);
+      font-size: 15px;
+      line-height: 1.5;
+      margin: 0;
+      padding-block: 16px 40px;
+      padding-left: max(16px, env(safe-area-inset-left));
+      padding-right: max(16px, env(safe-area-inset-right));
+      -webkit-font-smoothing: antialiased;
+    }
+    .sheet { max-width: 600px; margin: 0 auto; }
+    .binding { display: flex; justify-content: space-between; padding: 0 10px; margin-bottom: 12px; }
+    .binding i { width: 10px; height: 10px; border-radius: 50%; background: var(--ink); display: block; }
+    
+    .mast { display: grid; grid-template-columns: auto 1fr; column-gap: 16px; align-items: end; border-bottom: 3px solid var(--ink); padding-bottom: 12px; }
+    .day { font-family: var(--display); font-weight: 900; font-size: clamp(80px, 24vw, 120px); line-height: .78; letter-spacing: -4px; }
+    .month { font-family: var(--display); font-weight: 700; font-size: clamp(18px, 5.5vw, 24px); text-transform: uppercase; }
+    .weekday { font-family: var(--display); font-size: 14px; margin-top: 4px; color: var(--grey); }
+    .issue { margin-top: 10px; font-size: 13px; color: var(--grey); }
+    .issue b { display: block; font-family: var(--display); font-size: 14px; color: var(--ink); margin-bottom: 2px; }
+
+    .sunline { display: flex; justify-content: space-between; margin-top: 10px; padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+    .sunline b { font-family: var(--display); margin-left: 4px; }
+
+    section { margin-top: 24px; }
+    h2 { font-family: var(--display); font-size: 16px; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+
+    /* Жаңалықтардың кеңейтілген карточка стилі */
+    .news-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .news-card {
+      border: 1px solid var(--line);
+      background: var(--tint);
+      padding: 12px 14px;
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .tag {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--paper);
+      background: var(--ink);
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 2px;
+      align-self: flex-start;
+      margin-bottom: 6px;
+    }
+    .news-card strong {
+      font-family: var(--text);
+      font-size: 15px;
+      line-height: 1.35;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .news-card p {
+      margin: 0 0 8px 0;
+      font-size: 13.5px;
+      line-height: 1.45;
+    }
+    .takeaway {
+      background: var(--paper);
+      padding: 6px 8px;
+      border-left: 3px solid var(--ink);
+      font-size: 12.5px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .src {
+      font-size: 11px;
+      color: var(--grey);
+      text-align: right;
+    }
+
+    .idea {
+      border: 2px solid var(--ink);
+      padding: 16px;
+      background: var(--tint);
+    }
+    .idea-badge {
+      font-family: var(--display);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--paper);
+      background: var(--ink);
+      padding: 3px 8px;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+    .idea h3 {
+      font-family: var(--display);
+      font-size: 16px;
+      margin: 0 0 6px 0;
+    }
+    .idea p { margin: 0; font-size: 14px; }
+    .idea .step {
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--line);
+      font-size: 13px;
+    }
+
+    .poem {
+      font-style: italic;
+      text-align: center;
+      padding: 16px 0 0;
+      border-top: 2px solid var(--ink);
+      margin-top: 26px;
+      font-family: var(--hand);
+      font-size: 18px;
+    }
   </style>
 </head>
 <body>
@@ -68,81 +160,51 @@
     <div>
       <div class="month">{{ month }}</div>
       <div class="weekday">{{ weekday }}</div>
-      <div class="issue"><b>Утренний Ескендір</b>Күнделікті шығарылым · {{ city }}</div>
+      <div class="issue"><b>Утренний Ескендір</b>Күнделікті кеңейтілген дайджест · {{ city }}</div>
     </div>
   </header>
 
   <div class="sunline">
-    <span>Күн шығуы<b>07:18</b></span>
-    <span>Күн батуы<b>17:26</b></span>
-    <span>Күн ұзақтығы<b>10 сағ 08 мин</b></span>
+    <span>Күн шығуы:<b>07:18</b></span>
+    <span>Күн батуы:<b>17:26</b></span>
+    <span>Сәулелік күн:<b>10 сағ 08 мин</b></span>
   </div>
 
   <section>
-    <h2>Ауа райы: {{ city }}</h2>
-    <div class="weather">
-      <div class="temp">+16°</div>
-      <p>Күндіз +15…+17°, түнде 0…+2°. Ашық, жауын-шашынсыз. Жел солтүстік-шығыстан 7–12 м/с.</p>
-    </div>
-    <div class="week">
-      <div><b>ЕРТЕҢ</b>+16…+18°</div>
-      <div><b>БҮРСІГҮНІ</b>+18…+20°</div>
-      <div><b>ЖҰМА</b>+20…+22°</div>
-    </div>
-  </section>
-
-  <section>
-    <h2>Бүгінгі жоспар</h2>
-    <ul class="tasks">
-      <li><span class="box"></span><div><strong>Тауар қабылдау мен мерзімін тексеру</strong><small>Сүт және нан өнімдерінің жаңалығын қарап шығу</small></div></li>
-      <li><span class="box"></span><div><strong>Касса мен төлемдер есебі</strong><small>QR және қолма-қол түсімді салыстыру</small></div></li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>Еске салғыш</h2>
-    <ul class="tasks">
-      <li>
-        <input type="checkbox" id="vit" style="width:20px;height:20px;margin:3px 0 0;accent-color:var(--ink)">
-        <label for="vit"><strong>Таңғы дәрумендерді ішу</strong><small>Күн бойы сергек жүру үшін</small></label>
-      </li>
-    </ul>
-    <script>
-      (function(){
-        var k = 'morning-paper-vit-{{ date_key }}', el = document.getElementById('vit');
-        try{ el.checked = localStorage.getItem(k) === '1'; }catch(e){}
-        el.addEventListener('change', function(){
-          try{ localStorage.setItem(k, el.checked ? '1' : '0'); }catch(e){}
-        });
-      })();
-    </script>
-  </section>
-
-  <section>
-    <h2>Жаңалықтар</h2>
-    <ul class="news">
+    <h2>📰 Басты жаңалықтар легі</h2>
+    <div class="news-grid">
       {% for item in news %}
-      <li>
-        <span class="tag">{{ item.tag }}</span>
-        <strong>{{ item.title }}</strong>
-        {{ item.desc }}
-        <span class="s">{{ item.src }}</span>
-      </li>
+      <article class="news-card">
+        <div>
+          <span class="tag">{{ item.tag }}</span>
+          <strong>{{ item.title }}</strong>
+          <p>{{ item.desc }}</p>
+        </div>
+        <div>
+          {% if item.takeaway %}
+          <div class="takeaway">{{ item.takeaway }}</div>
+          {% endif %}
+          <div class="src">{{ item.src }}</div>
+        </div>
+      </article>
       {% endfor %}
-    </ul>
+    </div>
   </section>
 
   <section>
-    <h2>Дүкенге арналған күн идеясы</h2>
+    <h2>💡 Дүкенге арналған күн идеясы</h2>
     <div class="idea">
-      <p><strong>{{ idea.title }}</strong></p>
+      <span class="idea-badge">Маржинальді қадам</span>
+      <h3>{{ idea.title }}</h3>
       <p>{{ idea.desc }}</p>
-      <p><strong>Іске асыру:</strong> {{ idea.step }}</p>
+      <div class="step">
+        <strong>Іске асыру тетігі:</strong> {{ idea.step }}
+      </div>
     </div>
   </section>
 
   <div class="poem">
-    «Табысты дүкен — таза сөре мен жылы жүзді сатушыдан басталады».
+    «Таңғы ақпарат — күндізгі сенімді қадамның кепілі».
   </div>
 </div>
 
