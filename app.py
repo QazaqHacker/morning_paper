@@ -1,59 +1,97 @@
+import os
+import json
 from flask import Flask, render_template
-from datetime import datetime
-import random
+from datetime import datetime, timezone, timedelta
+from google import genai
 
-app = Flask(__name__)
+base_dir = os.path.abspath(os.path.dirname(__file__))
+template_dir = os.path.join(base_dir, 'templates')
 
-# Азық-түлік дүкеніне арналған күнделікті идеялар базасы
-SHOP_IDEAS = [
-    {
-        "title": "«Таңғы 60 секунд» касса жанындағы комбо-набор",
-        "desc": "Кассаның дәл қасына ыстық кофе/шай + жаңа піскен сэндвич немесе круассаннан тұратын дайын топтама қойыңыз. Таңертең жұмысқа асыққан адамдар үшін таптырмас нұсқа.",
-        "step": "Жергілікті наубайханамен күніне 10-15 сэндвич әкелуге және өтпей қалғанын қайтаруға келісім жасаңыз."
-    },
-    {
-        "title": "«Кешкі жеңіл ас» бір пакетте",
-        "desc": "Сағат 18:00-ден кейін дайын рецепт топтамасын жасаңыз: 0.5 кг спагетти + дайын соус + сыр. Сөреге «Бүгінгі кешкі асқа бас қатырмаңыз» деген жазу қойыңыз.",
-        "step": "Тұтынушы жеке-жеке іздемей, бірден барлық қорапты алып кетуіне жағдай жасаңыз."
-    },
-    {
-        "title": "WhatsApp/Telegram арқылы көршілерге жеткізу",
-        "desc": "Дүкен орналасқан үй немесе аула чаты үшін жеке бот/нөмір ашып, ауыр жүктерді (су, ұн, картоп) 20 минут ішінде есікке дейін тегін апарып беру.",
-        "step": "Кіреберістерге QR-коды бар шағын хабарландыру іліп шығыңыз."
-    }
-]
+app = Flask(__name__, template_folder=template_dir)
+
+# Gemini API клиентін баптау (Кілтті Render-дегі Environment Variables-ке саламыз)
+client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY", ""))
+
+def generate_daily_content(day_str):
+    """Күн сайын жаңа идея мен жаңалықтарды ЖИ арқылы генерациялау"""
+    prompt = f"""
+    Бүгінгі күн: {day_str}. Сен шағын азық-түлік дүкені иесіне арналған газет редакторысың.
+    Төмендегі талаптар бойынша JSON форматында жауап қайтар:
+    1. "idea": Азық-түлік дүкенінің саудасын арттыратын бүгінгі күнге арналған тың, нақты бизнес-идея ("title", "desc", "step").
+    2. "news": 4 өзекті жаңалық қысқаша ("tag", "title", "desc", "src"):
+       - Біріншісі: ЖИ (ИИ) тақырыбында
+       - Екіншісі: Бизнес және бөлшек сауда тақырыбында
+       - Үшіншісі: Қазақстан тақырыбында
+       - Төртіншісі: Әлемдік маңызды жаңалық
+
+    Тек қана таза JSON қайтар, басқа сөз қоспа:
+    {{
+      "idea": {{
+        "title": "...",
+        "desc": "...",
+        "step": "..."
+      }},
+      "news": [
+        {{"tag": "ИИ", "title": "...", "desc": "...", "src": "..."}},
+        {{"tag": "Бизнес", "title": "...", "desc": "...", "src": "..."}},
+        {{"tag": "Қазақстан", "title": "...", "desc": "...", "src": "..."}},
+        {{"tag": "Әлем", "title": "...", "desc": "...", "src": "..."}}
+      ]
+    }}
+    """
+    try:
+        response = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=prompt,
+        )
+        clean_text = response.text.replace("```json", "").replace("```", "").strip()
+        return json.loads(clean_text)
+    except Exception as e:
+        # Егер интернет немесе API кілті болмаса, сайт сөнбей жұмыс істеп тұруы үшін
+        return {
+            "idea": {
+                "title": "Сөрелерді оңтайландыру",
+                "desc": "Сұранысы жоғары негізгі тауарларды тұтынушының көз деңгейіне қойыңыз.",
+                "step": "Дүкенге кіргенде бірінші көрінетін сөрені қайта қарап шығыңыз."
+            },
+            "news": [
+                {"tag": "ЖИ", "title": "Ритейлге арналған жасанды интеллект", "desc": "Сауда нүктелерін автоматтандыру алгоритмдері дамуда.", "src": "Tech News"},
+                {"tag": "Бизнес", "title": "Шағын бизнес қолдау шаралары", "desc": "Бөлшек саудада электронды чек талаптары жүруде.", "src": "Zakon.kz"},
+                {"tag": "Қазақстан", "title": "Цифрлық төлемдер өсімі", "desc": "QR арқылы сауда жасау үлесі артып келеді.", "src": "Қазақстан жаңалықтары"},
+                {"tag": "Әлем", "title": "Нарықтағы соңғы өзгерістер", "desc": "Жаһандық азық-түлік бағасы тұрақталуда.", "src": "Reuters"}
+            ]
+        }
 
 @app.route("/")
 def home():
-    # Апта күндері мен айларды қазақша/орысша реттеу
-    weekdays = ["Дүйсенбі", "Сейсенбі", "Сәрсенбі", "Бейсенбі", "Жұма", "Сенбі", "Жексенбі"]
-    months = ["Қаңтар", "Ақпан", "Наурыз", "Сәуір", "Мамыр", "Маусым", 
-              "Шілде", "Тамыз", "Қыркүйек", "Қазан", "Қараша", "Желтоқсан"]
+    weekdays = ["дүйсенбі", "сейсенбі", "сәрсенбі", "бейсенбі", "жұма", "сенбі", "жексенбі"]
+    months = ["ҚАҢТАР", "АҚПАН", "НАУРЫЗ", "СӘУІР", "МАМЫР", "МАУСЫМ", 
+              "ШІЛДЕ", "ТАМЫЗ", "ҚЫРКҮЙЕК", "ҚАЗАН", "ҚАРАША", "ЖЕЛТОҚСАН"]
     
-    now = datetime.now()
+    # Қызылорда уақыты (UTC+5)
+    kz_timezone = timezone(timedelta(hours=5))
+    now = datetime.now(kz_timezone)
+    
     day_num = now.day
-    weekday = weekdays[now.weekday()]
-    month_name = months[now.month - 1]
+    weekday_str = weekdays[now.weekday()]
+    month_str = months[now.month - 1]
+    day_full = f"{day_num} {month_str} {now.year}, {weekday_str}"
     
-    # Күн бойынша өзгеріп отыратын бизнес-идея
-    today_idea = SHOP_IDEAS[now.day % len(SHOP_IDEAS)]
+    # ЖИ арқылы бүгінгі күндік контентті автоматты алу
+    content = generate_daily_content(day_full)
     
-    # Негізгі деректер (бұларды болашақта API арқылы да қосуға болады)
-    data = {
+    context = {
         "day": day_num,
-        "month": month_name,
-        "year": now.year,
-        "weekday": weekday,
+        "month": month_str,
+        "weekday": weekday_str,
         "city": "Қызылорда",
-        "sunrise": "07:18",
-        "sunset": "17:26",
-        "day_len": "10 сағ 08 мин",
-        "temp": "+16°",
-        "weather_desc": "Күндіз +15…+17°, түнде 0…+2°. Ашық, жауын-шашынсыз.",
-        "idea": today_idea
+        "idea": content.get("idea"),
+        "news": content.get("news", []),
+        "date_key": now.strftime("%Y-%m-%d")
     }
     
-    return render_template("index.html", **data)
+    return render_template("index.html", **context)
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
